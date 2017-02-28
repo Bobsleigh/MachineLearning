@@ -38,12 +38,15 @@ namespace MachineLearning
 
         private void timer_Tick(object sender, EventArgs e)
         {
+            UpdateRockets();
             Draw();
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             graphics.DrawRectangle(blackPen, new Rectangle(10, 10, 20, 20));
+            currentGen[0].Rotate(-45);
         }
 
         private void Draw()
@@ -52,6 +55,15 @@ namespace MachineLearning
             {
                 rocket.Draw(graphics, blackPen);
                 target.Draw(graphics, blackPen);
+            }
+        }
+
+        private void UpdateRockets()
+        {
+            foreach (Rocket rocket in currentGen)
+            {
+                rocket.Update();
+                graphics.Clear(Color.White);
             }
         }
     }
