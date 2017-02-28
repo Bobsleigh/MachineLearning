@@ -13,7 +13,7 @@ namespace MachineLearning
         int y;
         int xSpd;
         int ySpd;
-        Graphics rocketGraphic;
+        Graphics rocketGraphic = new Graphics();
 
         public int Length { get; set; }
         public int xSpeed
