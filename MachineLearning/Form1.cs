@@ -17,6 +17,9 @@ namespace MachineLearning
         Timer timer = new Timer();
         List<Rocket> currentGen = new List<Rocket>();
         Target target = new Target(50,50);
+        int lifespan = 200;
+        int count = 0;
+
 
         public Form1()
         {
@@ -33,14 +36,56 @@ namespace MachineLearning
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
 
-            currentGen.Add(new Rocket(50,50));
+            for(int i=0; i<15;i++)
+            {
+                currentGen.Add(new Rocket(new RndVector2D(), lifespan));
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
             UpdateRockets();
             Draw();
+            count++;
+            if (count >= lifespan)
+            {
+                count = 0;
+                nextPopulation();
+            }
+        }
 
+        private void nextPopulation()
+        {
+            double maxFit = 0;
+            for (int i = 0; i < 15; i++)
+            {
+                currentGen[i].calcFitness(target);
+                if (currentGen[i].finalFitness > maxFit)
+                {
+                    maxFit = currentGen[i].finalFitness;
+                }
+            }
+
+            //Build the mating pool
+            List<Rocket> matingPool = new List<Rocket>();
+            for (int i = 0; i < 15; i++)
+            {
+                double n = (currentGen[i].finalFitness / maxFit) * 500; //Nb of time a rocket is in the mating pool
+                for (int j = 0; j < n; j++)
+                {
+                    matingPool.Add(currentGen[i]);
+                }
+            }
+
+            currentGen.Clear();
+            for (int i = 0; i < 15; i++)
+            {
+                Rocket parentA = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
+                Rocket parentB = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
+                Rocket child = new Rocket(lifespan);
+                child.DNA = parentA.DNA.CrossOver(parentB.DNA);
+                currentGen.Add(child);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,8 +107,21 @@ namespace MachineLearning
         {
             foreach (Rocket rocket in currentGen)
             {
-                rocket.Update();
-                graphics.Clear(Color.White);
+                rocket.Update(count);
+                CheckCollisions(rocket);
+            }
+            graphics.Clear(Color.White);
+        }
+
+        private void CheckCollisions(Rocket rocket)
+        {
+            if (rocket.Pos.X < target.x + target.width && rocket.Pos.X > target.x)
+            {
+                if (rocket.Pos.Y < target.y + target.height && rocket.Pos.Y > target.y && !rocket.Completed)
+                {
+                    rocket.Completed = true;
+                    rocket.TimeCompleted = count;
+                }
             }
         }
     }

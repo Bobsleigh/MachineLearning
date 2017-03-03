@@ -14,21 +14,25 @@ namespace MachineLearning
 
         Vector pos = new Vector(0, 0);
         Vector shape = new Vector(0, 0);
-        Vector speed = new Vector(1, 1);
+        Vector speed = new Vector(0, 0);
         Vector acc = new Vector(0, 0);
-        /*                   
-        int xSpd;
-        int ySpd;
-        int xAcc;
-        int yAcc;
-        double x;
-        double y;
-        double x2;
-        double y2;
-        */
+        int lifespan;
+        Dna genes;
+
+        public bool Completed { get; set; }
+        public double finalFitness { get; set; }
+
         double angle;
 
         public double Length { get; set; }
+
+        public int TimeCompleted { get; set; }
+
+        public Dna DNA
+        {
+            get { return genes; }
+            set { genes = value; }
+        }
 
         public double xSpeed
         {
@@ -88,14 +92,38 @@ namespace MachineLearning
                 angle = value;
             }
         }
-
-        public Rocket(double X, double Y)
+        public Rocket(int lifesp)
         {
-            pos.X = X;
-            pos.Y = Y;
+            speed.X = 0;
+            speed.Y = 0;
+
+            pos.X = 300;
+            pos.Y = 300;
             Length = 20;
-            shape.X = X;
-            shape.Y = Y + Length;
+            shape.X = pos.X;
+            shape.Y = pos.Y + Length;
+
+            lifespan = lifesp;
+            TimeCompleted = -1;
+
+            genes = new Dna(lifespan);
+        }
+
+        public Rocket(RndVector2D rndVector, int lifesp)
+        {
+            speed.X = rndVector.vec.X;
+            speed.Y = rndVector.vec.Y;
+
+            pos.X = 300;
+            pos.Y = 300;
+            Length = 20;
+            shape.X = pos.X;
+            shape.Y = pos.Y + Length;
+            TimeCompleted = -1;
+
+            lifespan = lifesp;
+
+            genes = new Dna(lifespan);
         }
 
         public override void Draw(Graphics graphics, Pen pen)
@@ -103,12 +131,39 @@ namespace MachineLearning
             graphics.DrawLine(pen, (float)pos.X, (float)pos.Y, (float)shape.X, (float)shape.Y);
         }
 
-        public void Update()
+        public void Update(int count)
         {
-            pos = Vector.Add(pos, speed);
-            shape = Vector.Add(shape, speed);
-            speed = Vector.Add(speed, acc);
-            acc = Vector.Multiply(0, acc);
+            if (!Completed)
+            {
+                acc = Vector.Add(acc, 0.1 * genes.getCurrentGene(count));
+                speed = Vector.Add(speed, acc);
+                pos = Vector.Add(pos, speed);
+                shape = Vector.Add(shape, speed);
+                acc = Vector.Multiply(0, acc);
+
+                double rot = Vector.AngleBetween(speed, shape);
+
+                if (Math.Atan2(shape.Y, shape.X) < Math.Atan2(speed.Y, speed.X))
+                {
+                    //Rotate((int)rot);
+                }
+                else
+                {
+                    //Rotate(-(int)rot);
+                }
+            }
+
+        }
+
+        public double calcFitness(Target target)
+        {
+            double fitness = 1 / (Math.Sqrt(Math.Pow((pos.X - target.x), 2) + Math.Pow((pos.Y - target.y), 2)));
+            if (Completed)
+            {
+                fitness = fitness * 10 + (100/TimeCompleted);
+            }
+            finalFitness = fitness;
+            return fitness;
         }
 
         public void Rotate(double angleInDeg)

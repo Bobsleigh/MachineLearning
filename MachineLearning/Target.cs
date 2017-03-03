@@ -7,12 +7,12 @@ using System.Drawing;
 
 namespace MachineLearning
 {
-    class Target : Drawable
+    public class Target : Drawable
     {
-        int x;
-        int y;
-        int height;
-        int width;
+        public int x { get; set; }
+        public int y { get; set; }
+        public int height { get; set; }
+        public int width { get; set; }
 
         public Target(int X, int Y)
         {
