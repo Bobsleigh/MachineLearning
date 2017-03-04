@@ -54,7 +54,7 @@ namespace MachineLearning
             for (int i = 0; i < genesMutate.genes.Length; i++)
             {
                 int n = RandomGen.rnd.Next(0, 1000);
-                if (n < 5)
+                if (n < Settings.mutationRate)
                 {
                     genesMutate.genes[i] = new RndVector2D().vec;
                 }

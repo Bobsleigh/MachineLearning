@@ -13,6 +13,7 @@ namespace MachineLearning
     {
 
         Vector pos = new Vector(0, 0);
+        Vector endPoint = new Vector(0, 0);
         Vector shape = new Vector(0, 0);
         Vector speed = new Vector(0, 0);
         Vector acc = new Vector(0, 0);
@@ -32,6 +33,22 @@ namespace MachineLearning
         {
             get { return genes; }
             set { genes = value; }
+        }
+
+        public Vector Shape
+        {
+            get
+            {
+                return shape;
+            }
+            set
+            {
+                shape.X = value.X;
+                shape.Y = value.Y;
+
+                endPoint.X = pos.X + shape.X;
+                endPoint.Y = pos.Y + shape.Y;
+            }
         }
 
         public double xSpeed
@@ -55,6 +72,18 @@ namespace MachineLearning
             set
             {
                 pos = value;
+            }
+        }
+
+        public Vector EndPoint
+        {
+            get
+            {
+                return endPoint;
+            }
+            set
+            {
+                endPoint = value;
             }
         }
 
@@ -86,9 +115,8 @@ namespace MachineLearning
             get { return angle; }
             set
             {
-                Vector endPoint = RotatePoint(shape, pos, value - angle);
-                shape.X = endPoint.X;
-                shape.Y = endPoint.Y;
+                Vector temp = RotatePoint(endPoint, pos, value - angle);
+                Shape = Vector.Subtract(temp, pos);
                 angle = value;
             }
         }
@@ -100,8 +128,10 @@ namespace MachineLearning
             pos.X = 300;
             pos.Y = 300;
             Length = 20;
-            shape.X = pos.X;
-            shape.Y = pos.Y + Length;
+            endPoint.X = pos.X;
+            endPoint.Y = pos.Y + Length;
+            shape.X = endPoint.X - pos.X;
+            shape.Y = endPoint.Y - pos.Y;
 
             lifespan = lifesp;
             TimeCompleted = -1;
@@ -117,8 +147,10 @@ namespace MachineLearning
             pos.X = 300;
             pos.Y = 300;
             Length = 20;
-            shape.X = pos.X;
-            shape.Y = pos.Y + Length;
+            endPoint.X = pos.X;
+            endPoint.Y = pos.Y + Length;
+            Shape = Vector.Subtract(endPoint, pos);
+
             TimeCompleted = -1;
 
             lifespan = lifesp;
@@ -128,19 +160,26 @@ namespace MachineLearning
 
         public override void Draw(Graphics graphics, Pen pen)
         {
-            graphics.DrawLine(pen, (float)pos.X, (float)pos.Y, (float)shape.X, (float)shape.Y);
+            graphics.DrawLine(pen, (float)pos.X, (float)pos.Y, (float)endPoint.X, (float)endPoint.Y);
         }
 
         public void Update(int count)
         {
             if (!Completed)
             {
+
                 acc = Vector.Add(acc, 0.1 * genes.getCurrentGene(count));
                 speed = Vector.Add(speed, acc);
                 pos = Vector.Add(pos, speed);
-                shape = Vector.Add(shape, speed);
+                endPoint = Vector.Add(endPoint, speed);
                 acc = Vector.Multiply(0, acc);
 
+                double angleShape = (Math.Atan2(Shape.Y, Shape.X) * 180) / Math.PI;
+                double angleSpeed = (Math.Atan2(speed.Y, speed.X) * 180) / Math.PI;
+
+                Rotate(angleSpeed - angleShape);
+
+                /*
                 double rot = Vector.AngleBetween(speed, shape);
 
                 if (Math.Atan2(shape.Y, shape.X) < Math.Atan2(speed.Y, speed.X))
@@ -151,8 +190,8 @@ namespace MachineLearning
                 {
                     //Rotate(-(int)rot);
                 }
+                */
             }
-
         }
 
         public double calcFitness(Target target)

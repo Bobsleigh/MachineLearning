@@ -36,7 +36,7 @@ namespace MachineLearning
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
 
-            for(int i=0; i<15;i++)
+            for(int i = 0; i < Settings.rocketsPerGen; i++)
             {
                 currentGen.Add(new Rocket(new RndVector2D(), lifespan));
             }
@@ -57,7 +57,7 @@ namespace MachineLearning
         private void nextPopulation()
         {
             double maxFit = 0;
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < Settings.rocketsPerGen; i++)
             {
                 currentGen[i].calcFitness(target);
                 if (currentGen[i].finalFitness > maxFit)
@@ -68,7 +68,7 @@ namespace MachineLearning
 
             //Build the mating pool
             List<Rocket> matingPool = new List<Rocket>();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < Settings.rocketsPerGen; i++)
             {
                 double n = (currentGen[i].finalFitness / maxFit) * 500; //Nb of time a rocket is in the mating pool
                 for (int j = 0; j < n; j++)
@@ -78,7 +78,7 @@ namespace MachineLearning
             }
 
             currentGen.Clear();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < Settings.rocketsPerGen; i++)
             {
                 Rocket parentA = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
                 Rocket parentB = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
@@ -115,9 +115,9 @@ namespace MachineLearning
 
         private void CheckCollisions(Rocket rocket)
         {
-            if (rocket.Pos.X < target.x + target.width && rocket.Pos.X > target.x)
+            if (rocket.EndPoint.X < target.x + target.width && rocket.EndPoint.X > target.x)
             {
-                if (rocket.Pos.Y < target.y + target.height && rocket.Pos.Y > target.y && !rocket.Completed)
+                if (rocket.EndPoint.Y < target.y + target.height && rocket.EndPoint.Y > target.y && !rocket.Completed)
                 {
                     rocket.Completed = true;
                     rocket.TimeCompleted = count;
