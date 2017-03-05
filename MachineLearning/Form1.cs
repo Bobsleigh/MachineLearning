@@ -17,8 +17,9 @@ namespace MachineLearning
         Timer timer = new Timer();
         List<Rocket> currentGen = new List<Rocket>();
         Target target = new Target(50,50);
-        int lifespan = 200;
+
         int count = 0;
+        int generationCount = 1;
 
 
         public Form1()
@@ -38,7 +39,7 @@ namespace MachineLearning
 
             for(int i = 0; i < Settings.rocketsPerGen; i++)
             {
-                currentGen.Add(new Rocket(new RndVector2D(), lifespan));
+                currentGen.Add(new Rocket(new RndVector2D(), Settings.lifespan));
             }
         }
 
@@ -47,7 +48,7 @@ namespace MachineLearning
             UpdateRockets();
             Draw();
             count++;
-            if (count >= lifespan)
+            if (count >= Settings.lifespan)
             {
                 count = 0;
                 nextPopulation();
@@ -57,6 +58,7 @@ namespace MachineLearning
         private void nextPopulation()
         {
             double maxFit = 0;
+
             for (int i = 0; i < Settings.rocketsPerGen; i++)
             {
                 currentGen[i].calcFitness(target);
@@ -82,16 +84,34 @@ namespace MachineLearning
             {
                 Rocket parentA = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
                 Rocket parentB = matingPool[RandomGen.rnd.Next(0, matingPool.Count)];
-                Rocket child = new Rocket(lifespan);
+                Rocket child = new Rocket(Settings.lifespan);
                 child.DNA = parentA.DNA.CrossOver(parentB.DNA);
                 currentGen.Add(child);
             }
+
+            generationCount++;
+            lbGeneration.Text = generationCount.ToString();
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            graphics.DrawRectangle(blackPen, new Rectangle(10, 10, 20, 20));
-            currentGen[0].Rotate(-45);
+            resetGenerations();
+        }
+
+        private void resetGenerations()
+        {
+            count = 0;
+            generationCount = 1;
+            currentGen.Clear();
+            lbGeneration.Text = generationCount.ToString();
+            Settings.rocketsPerGen = (int)udRocketsPerGen.Value;
+            Settings.mutationRate = (int)(udMutationRate.Value * 1000);
+            Settings.lifespan = (int)udLifespan.Value;
+            for (int i = 0; i < Settings.rocketsPerGen; i++)
+            {
+                currentGen.Add(new Rocket(new RndVector2D(), Settings.lifespan));
+            }
         }
 
         private void Draw()

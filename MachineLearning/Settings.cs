@@ -10,5 +10,6 @@ namespace MachineLearning
     {
         public static int rocketsPerGen = 15;
         public static int mutationRate = 5; // Per thousandth
+        public static int lifespan = 200;
     }
 }
