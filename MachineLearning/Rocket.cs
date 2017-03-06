@@ -178,19 +178,6 @@ namespace MachineLearning
                 double angleSpeed = (Math.Atan2(speed.Y, speed.X) * 180) / Math.PI;
 
                 Rotate(angleSpeed - angleShape);
-
-                /*
-                double rot = Vector.AngleBetween(speed, shape);
-
-                if (Math.Atan2(shape.Y, shape.X) < Math.Atan2(speed.Y, speed.X))
-                {
-                    //Rotate((int)rot);
-                }
-                else
-                {
-                    //Rotate(-(int)rot);
-                }
-                */
             }
         }
 

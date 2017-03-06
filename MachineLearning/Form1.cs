@@ -91,6 +91,7 @@ namespace MachineLearning
 
             generationCount++;
             lbGeneration.Text = generationCount.ToString();
+            lbMaxFitness.Text = (maxFit*100).ToString("F");
 
         }
 

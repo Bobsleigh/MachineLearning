@@ -37,6 +37,8 @@
             this.udMutationRate = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.udLifespan = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lbMaxFitness = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.udRocketsPerGen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udMutationRate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udLifespan)).BeginInit();
@@ -159,11 +161,31 @@
             0,
             0});
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(515, 36);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Max Fitness:";
+            // 
+            // lbMaxFitness
+            // 
+            this.lbMaxFitness.AutoSize = true;
+            this.lbMaxFitness.Location = new System.Drawing.Point(587, 36);
+            this.lbMaxFitness.Name = "lbMaxFitness";
+            this.lbMaxFitness.Size = new System.Drawing.Size(13, 13);
+            this.lbMaxFitness.TabIndex = 10;
+            this.lbMaxFitness.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 465);
+            this.Controls.Add(this.lbMaxFitness);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.udLifespan);
             this.Controls.Add(this.label3);
@@ -195,6 +217,8 @@
         private System.Windows.Forms.NumericUpDown udMutationRate;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown udLifespan;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lbMaxFitness;
     }
 }
 
